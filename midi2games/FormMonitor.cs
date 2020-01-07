@@ -20,21 +20,15 @@ namespace midi2games
         public FormMonitor()
         {
             InitializeComponent();
-            //SetStyle(
-            //    ControlStyles.DoubleBuffer |
-            //    ControlStyles.UserPaint |
-            //    ControlStyles.AllPaintingInWmPaint, true);
-            //UpdateStyles();
             InitDataSet();            
         }
 
         private void InitDataSet()
         {
-            this.dataGridView1.CellValueNeeded += new
+            dataGridView1.CellValueNeeded += new
                 DataGridViewCellValueEventHandler(dataGridView1_CellValueNeeded);
             if (dataGridView1.RowCount > 0)
                 dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-            //dataGridView1.DataSource = eventsData;
         }        
         
         public void SetHandler(MidiHandler handler)
@@ -51,86 +45,14 @@ namespace midi2games
 
         private void HandleOnRecieve(object sender, MidiEventReceivedEventArgs args)
         {
-            //AddDataRecord(sender, args);
             MidiMonitorRecord r = new MidiMonitorRecord(DateTime.Now, args.Event);
             eventStore.Add(r);
-            //dataGridView1.RowCount = eventStore.Count;
-            //SetRowCount(eventStore.Count);
-            return;
-
-            switch (args.Event.EventType)
-            {
-                case MidiEventType.ControlChange:
-                    var cce = (ControlChangeEvent)args.Event;
-                    AddGridRow(
-                            DateTime.Now.ToString("HH:mm:ss:fff"),
-                            "Control change",
-                            cce.Channel,
-                            cce.ControlNumber,
-                            cce.ControlValue,
-                            nv,
-                            nv,
-                            nv
-                        );
-                    break;
-                case MidiEventType.ProgramChange:
-                    var pce = (ProgramChangeEvent)args.Event;
-                    AddGridRow(
-                            DateTime.Now.ToString("HH:mm:ss:fff"),
-                            "Program change",
-                            pce.Channel,
-                            nv,
-                            nv,
-                            pce.ProgramNumber,
-                            nv,
-                            nv
-                        );
-                    break;
-                case MidiEventType.NoteOn:
-                    var noe = (NoteOnEvent)args.Event;
-                    AddGridRow(
-                            DateTime.Now.ToString("HH:mm:ss:fff"),
-                            "NoteOn",
-                            noe.Channel,
-                            nv,
-                            nv,
-                            nv,
-                            noe.NoteNumber,
-                            noe.Velocity                            
-                        );
-                    break;
-                case MidiEventType.NoteOff:
-                    var nOffEvevent = (NoteOffEvent)args.Event;
-                    AddGridRow(
-                            DateTime.Now.ToString("HH:mm:ss:fff"),
-                            "NoteOff",
-                            nOffEvevent.Channel,
-                            nv,
-                            nv,
-                            nv,
-                            nOffEvevent.NoteNumber,
-                            nOffEvevent.Velocity
-                            );
-                    break;
-            }
+            
         }
 
         public FormMidi2Game formMain;
-        //private delegate void SafeCallAddListItem(ListViewItem item);
         private delegate void SafeCallAddGridRow(object[] values);
         private delegate void SafeCallSetRowCount(int rowCount);
-        //private void AddListItem(ListViewItem item)
-        //{
-        //    if (listViewMidiEvents.InvokeRequired)
-        //    {
-        //        var d = new SafeCallAddListItem(AddListItem);
-        //        listViewMidiEvents.Invoke(d, new object[] { item } );
-        //    }
-        //    else
-        //    {
-        //        listViewMidiEvents.Items.Add(item);
-        //    }
-        //}
 
         private void AddGridRow(params object[] values)
         {
@@ -142,7 +64,6 @@ namespace midi2games
             else
             {
                 dataGridView1.Rows.Add(values);
-                //dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
             }
         }
 

@@ -14,6 +14,13 @@ namespace midi2games
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();    
         private InputDevice inputDevice;
+        PresetFile presetFile;
+
+        public PresetFile PresetFile {
+            get { return presetFile; }
+            set { presetFile = value; }
+        }
+
         public MidiHandler(string deviceName)
         {
             inputDevice = InputDevice.GetByName(deviceName);
@@ -43,70 +50,67 @@ namespace midi2games
 
         public void Close()
         {
-            inputDevice.StopEventsListening();
-            inputDevice.EventReceived -= OnEventReceived;
-            inputDevice.Dispose();
+            try {
+                inputDevice.StopEventsListening();
+                inputDevice.EventReceived -= OnEventReceived;
+                inputDevice.Dispose();
+            } catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
         }
 
         private void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
         {
             var midiDevice = (MidiDevice) sender;
             logger.Debug($"MIDI event received from '{midiDevice.Name}: ' {e.Event}");
-            switch (e.Event.EventType)
-            {
-                case MidiEventType.ProgramChange:
-                    HandleProgramChange((ProgramChangeEvent) e.Event);
-                    break;
-                case MidiEventType.ControlChange:
-                    HandleControlChange((ControlChangeEvent)e.Event);
-                    break;
-                default:
-                    break;
-            }
-
+            ProcessRules(e);
             OnRecieveEvent?.Invoke(this, e);
         }
 
-        private void HandleProgramChange(ProgramChangeEvent e)
+        private void ProcessRules(MidiEventReceivedEventArgs e)
         {
-            switch (e.ProgramNumber)
+            if (presetFile == null)
+                return;
+
+            var ruleIndex = 0;
+            foreach (HandleRule rule in presetFile.rulesStorage)
             {
-                case 15:
-                    EmulateKeyPress("{w}");
-                    break;
-                case 16:
-                    EmulateKeyPress("{a}");
-                    break;
-                case 17:
-                    EmulateKeyPress("{s}");
-                    break;
-                case 18:
-                    EmulateKeyPress("{d}");
-                    break;
+                logger.Trace($"handle rule index={ruleIndex} : {rule.GetType().Name}");
+                var matchResult = rule.CheckMatch(this, e.Event);
+                logger.Trace($" -- check match = {matchResult}");
+                if (matchResult)
+                {
+                    // call event
+                    OnMatchRuleEvent?.Invoke(this, rule);
+
+                    // execute action
+                    if (rule.Action != null)
+                    {
+                        logger.Trace($"-- executed linked action: {rule.Action.GetType().Name}");                        
+                        rule.Action.Execute();
+                    }
+                    else
+                    {
+                        logger.Trace("-- there is no linked action");
+                    }
+
+
+                    if (rule.StopProcessing)
+                    {
+                        logger.Trace("-- flag StopProcessing is set. Break.");
+                        break;
+                    }
+                }
+                ruleIndex++;
             }
         }
 
-        private void HandleControlChange(ControlChangeEvent e)
-        {
 
-        }
-
-        private void EmulateKeyPress(string s)
-        {
-            SendKeys.SendWait(s);
-            logger.Debug("emulate keys: " + s);
-        }
-
-        public delegate void RecieveEventHandler(object sender, MidiEventReceivedEventArgs args);
+        public delegate void RecieveEventHandler(object sender, MidiEventReceivedEventArgs args);        
         public event RecieveEventHandler OnRecieveEvent;
+        public event RuleEventHandler OnMatchRuleEvent;
     }
 
-    public class LogMidiEvent
-    {
-        public string EventTypeName;
-        public int Channel;
-        public int Program;
-        public int ProgramValue;
-        public int Control;
-    }
 }

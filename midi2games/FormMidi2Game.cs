@@ -1,4 +1,5 @@
-﻿using Melanchall.DryWetMidi.Devices;
+﻿using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Devices;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace midi2games
     public partial class FormMidi2Game : Form
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private RulesManager rulesManager;
+        private PresetFile rulesManager;
         public FormMidi2Game()
         {
             InitializeComponent();
@@ -29,59 +30,86 @@ namespace midi2games
             FillInputDevices();
             tsbMonitor.PerformClick();
             InitRulesManager();
+            RefreshStatusDevice();
         }
 
         void InitRulesManager()
         {
-            rulesManager = new RulesManager();
+            var f = new PresetFile();
 
-            var r1 = new ControlValueRule(43, 127);
+            var r1 = new ControlValueIncreaceRule();
+            r1.ControlNumber = 50;
             r1.RuleName = "Rule 1";
-            var a1 = new RuleActionKey();
-            a1.KeysToSend = "{w}";
+            var a1 = new RuleActionMouseAbs();
+            a1.X = 400;
+            a1.Y = 720;
             r1.Action = a1;
-            rulesManager.AddRule(r1);
+            f.AddRule(r1);
 
-            var r2 = new ControlValueRule(93, 127);
+            var r2 = new ControlValueDecreaceRule();
             r2.RuleName = "Rule 2";
-            var a2 = new RuleActionKey();
-            a2.KeysToSend = "{s}";
+            r2.ControlNumber = 50;
+            var a2 = new RuleActionMouseAbs();
+            a2.X = 1500;
+            a2.Y = 720;
             r2.Action = a2;
-            r2.StopProcessing = true;
-            rulesManager.AddRule(r2);
+            f.AddRule(r2);
 
             var r3 = new ControlValueIncreaceRule();
             r3.ControlNumber = 43;
             r3.RuleName = "Rule 3";
             r3.Action = new RuleActionKey("{z}");
-            rulesManager.AddRule(r3);
+            f.AddRule(r3);
 
             var r4 = new NoteOnRule(77);
             r2.RuleName = "Rule 4 - note";
             var a4 = new RuleActionKey("{d}");
             r4.Action = a4;
-            rulesManager.AddRule(r4);
+            f.AddRule(r4);
 
             var r5 = new ControlValueDecreaceRule();
-            r5.ControlNumber = 43;
+            r5.ControlNumber = 93;
             r5.RuleName = "Rule 5 - decrease";
-            r5.Action = new RuleActionKey("{e}");
-            rulesManager.AddRule(r5);
+            var a5 = new RuleActionMouseOffset();
+            a5.Offset = 50;
+            a5.Direction = Orientation.Horizontal;
+            r5.Action = a5;
+            f.AddRule(r5);
 
-            var r6 = new ControlValueDecreaceRule();
+            var r6 = new ControlValueIncreaceRule();
             r6.ControlNumber = 93;
-            r6.RuleName = "Rule 6 - decrease";
-            r6.Action = new RuleActionKey("{t}");
-            rulesManager.AddRule(r6);
-
+            r6.RuleName = "Rule 6 - increase";
+            var a6 = new RuleActionMouseOffset();
+            a6.Offset = -50;
+            a6.Direction = Orientation.Horizontal;
+            r6.Action = a6;
+            f.AddRule(r6);
 
             var r7 = new ControlValueIncreaceRule();
-            r7.ControlNumber = 93;
+            r7.ControlNumber = 43;
             r7.RuleName = "Rule 7 - increace";
             r7.Action = new RuleActionKey("{y}");
-            rulesManager.AddRule(r7);
+            f.AddRule(r7);
 
-            RefreshRules();
+            var r8 = new ControlValueDecreaceRule();
+            r8.ControlNumber = 51;
+            r8.RuleName = "Rule 8 - decrease";
+            var a8 = new RuleActionMouseOffset();
+            a8.Offset = 50;
+            a8.Direction = Orientation.Vertical;
+            r8.Action = a8;
+            f.AddRule(r8);
+
+            var r9 = new ControlValueIncreaceRule();
+            r9.ControlNumber = 51;
+            r9.RuleName = "Rule 9 - increase";
+            var a9 = new RuleActionMouseOffset();
+            a9.Offset = -50;
+            a9.Direction = Orientation.Vertical;
+            r9.Action = a9;
+            f.AddRule(r9);
+
+            SetPresetFile(f);
         }
 
         void FillInputDevices()
@@ -102,6 +130,7 @@ namespace midi2games
 
         public FormLog formLog;
         public FormMonitor formMonitor;
+        public FormRule formRule;
 
         void OpenLogForm()
         {
@@ -110,6 +139,38 @@ namespace midi2games
             formLog.formMain = this;
             formLog.Show();
             formLog.BringToFront();            
+        }
+
+        private void SetPresetFile(PresetFile file)
+        {
+            rulesManager = file;
+            if (midiHandler != null)
+            {
+                midiHandler.PresetFile = file;
+            }
+            RefreshRules();
+        }
+
+        private void SetHandler(MidiHandler h)
+        {
+            if (midiHandler != null)
+            {
+                midiHandler.OnRecieveEvent -= HandleRecieveEvent;
+                midiHandler.OnMatchRuleEvent -= OnMatchRule;
+            }
+            midiHandler = h;
+            if (midiHandler != null)
+            {
+                midiHandler.OnMatchRuleEvent += OnMatchRule;
+                midiHandler.OnRecieveEvent += HandleRecieveEvent;
+                midiHandler.PresetFile = rulesManager;
+            }
+            // attach to Monitor form
+            if (formMonitor != null)
+            {
+                logger.Debug("Attaching handler to FormMonitor");
+                formMonitor.SetHandler(midiHandler);
+            }            
         }
 
         void SetupLogOutput()
@@ -142,9 +203,8 @@ namespace midi2games
             logger.Info("Try to open device...");
             if (midiHandler != null)
             {
-                rulesManager.MidiHandler = null;
                 midiHandler.Close();
-                midiHandler = null;
+                SetHandler(null);
             }
             var device = (InputDevice)tsComboBoxDevice.SelectedItem;
             logger.Info($"Start handler {device.Name} id={device.Id}");
@@ -153,17 +213,11 @@ namespace midi2games
             if (midiHandler == null)
             {
                 logger.Debug("Creating handler...");
-                midiHandler = new MidiHandler(device.Id);
-                rulesManager.MidiHandler = midiHandler;
-
-                // attach to Monitor form
-                if (formMonitor != null)
-                {
-                    logger.Debug("Attaching handler to FormMonitor");
-                    formMonitor.SetHandler(midiHandler);
-                }
+                var h = new MidiHandler(device.Id);
+                SetHandler(h);
                 logger.Debug("Handler created");
-            }            
+            }
+            RefreshStatusDevice();
         }
 
         private void tsbCloseDevice_Click(object sender, EventArgs e)
@@ -174,8 +228,7 @@ namespace midi2games
                 return;
             }
             midiHandler.Close();
-            rulesManager.MidiHandler = null;
-            midiHandler = null;
+            SetHandler(null);
             logger.Info("Device closed");
         }
 
@@ -184,7 +237,6 @@ namespace midi2games
             string s = AppUtils.GetBaseDataDirectory();
             Process.Start("explorer.exe", s);
         }
-
         
         private void tsbMonitor_Click(object sender, EventArgs e)
         {
@@ -211,10 +263,13 @@ namespace midi2games
         }
 
         private void FillRule(ListViewItem item, HandleRule rule)
-        {            
+        {
+            item.Tag = rule;
             item.SubItems.Clear();
             item.SubItems.Add(rule.RuleName);
             item.SubItems.Add(rule.GetHumanName());
+            item.Text = item.Index.ToString();
+            item.StateImageIndex = 0;
             if (rule.Action != null)
             {
                 item.SubItems.Add(rule.Action.GetHumanName());
@@ -227,22 +282,190 @@ namespace midi2games
 
         private void RefreshRules()
         {
-            listView1.BeginUpdate();
-            try
-            {
-                int counter = 0;
-                foreach (HandleRule rule in rulesManager.rulesStorage)
+            listViewRules.BeginUpdate();
+            try                
+            {                
+                listViewRules.Items.Clear();
+                if (rulesManager != null)
                 {
-                    ListViewItem itm = new ListViewItem();
-                    FillRule(itm, rule);
-                    itm.Text = counter.ToString();
-                    listView1.Items.Add(itm);
-                    counter++;
+                    int counter = 0;
+                    foreach (HandleRule rule in rulesManager.rulesStorage)
+                    {
+                        ListViewItem itm = new ListViewItem();
+                        FillRule(itm, rule);
+                        // Set text = counter value, because item is not added yet and has no index
+                        itm.Text = counter.ToString();
+                        listViewRules.Items.Add(itm);
+                        counter++;
+                    }
                 }
             } finally
             {
-                listView1.EndUpdate();
+                listViewRules.EndUpdate();
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(rulesManager.SerializeXml());
+            PresetFile.SerializeToFile(AppUtils.GetPresetsDirectory() + "/test.xml", rulesManager);
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rulesManager.Clear();
+            RefreshRules();
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var rm = PresetFile.DeserializeFromFile(AppUtils.GetPresetsDirectory() + "/test.xml");
+            MessageBox.Show(rm.SerializeXml());
+            SetPresetFile(rm);
+        }
+
+        private void tsbRuleUp_Click(object sender, EventArgs e)
+        {
+            if (listViewRules.SelectedItems.Count != 1) return;
+            var oldIndex = listViewRules.SelectedItems[0].Index;
+            if (oldIndex == 0) return;
+            var newIndex = oldIndex - 1;
+            rulesManager.rulesStorage.Move(oldIndex, newIndex);
+            RefreshRules();
+            listViewRules.Items[newIndex].Selected = true;
+        }
+
+        private void tsbRuleDown_Click(object sender, EventArgs e)
+        {
+            if (listViewRules.SelectedItems.Count != 1) return;
+            var oldIndex = listViewRules.SelectedItems[0].Index;
+            if (oldIndex == listViewRules.Items.Count - 1) return;
+            var newIndex = oldIndex + 1;
+            rulesManager.rulesStorage.Move(oldIndex, newIndex);
+            RefreshRules();
+            listViewRules.Items[newIndex].Selected = true;
+        }
+
+        private void tsbRuleDelete_Click(object sender, EventArgs e)
+        {
+            if (listViewRules.SelectedItems.Count == 0) return;
+            foreach (ListViewItem itm in listViewRules.SelectedItems)
+            {
+                rulesManager.RemoveRule((HandleRule)itm.Tag);
+            }
+            RefreshRules();
+        }
+
+        private void RefreshStatusDevice()
+        {
+            string status = "";
+            if (midiHandler == null)
+            {
+                status = "<None>";
+            }
+            else
+            {
+                status = midiHandler.Device.Name;
+            }
+            statusDevice.Text = status;
+        }
+
+        ListViewItem FindListItemByRule(HandleRule rule)
+        {
+            foreach (ListViewItem item in listViewRules.Items)
+            {
+                if (item.Tag == rule)
+                    return item;
+            }
+            return null;
+        }
+
+        private Queue<HandleRule> matchedRules = new Queue<HandleRule>();
+        private Queue<MidiEvent> queueEvents = new Queue<MidiEvent>();
+        private void OnMatchRule(object sender, HandleRule rule)
+        {
+            matchedRules.Enqueue(rule);
+        }
+
+        private void timerUpdate_Tick(object sender, EventArgs e)
+        {          
+            // Clear rule state
+            foreach (ListViewItem item in listViewRules.Items)
+            {
+                item.StateImageIndex = 0;
+            }
+
+            // Set Matched state to rule items
+            while (matchedRules.Count > 0)
+            {
+                var rule = matchedRules.Dequeue();
+                ListViewItem item = FindListItemByRule(rule);
+                if (item != null)
+                {
+                    item.StateImageIndex = 1;
+                }               
+            }
+
+            // Clear status event state
+            statusSignal.BackColor = SystemColors.ButtonFace;
+            statusSignal.ForeColor = SystemColors.ControlText;
+
+            // Set signal state
+            if (queueEvents.Count > 0)
+            {
+                queueEvents.Clear();
+                statusSignal.BackColor = SystemColors.Highlight;
+                statusSignal.ForeColor = SystemColors.HighlightText;
+            }
+        }
+
+        private void HandleRecieveEvent(object sender, MidiEventReceivedEventArgs e)
+        {
+            queueEvents.Enqueue(e.Event);
+        }
+
+        private ListViewItem GetFirstSelectedRuleItem()
+        {
+            if (listViewRules.SelectedItems.Count == 0) return null;
+            return listViewRules.SelectedItems[0];
+        }
+
+        private void tsbEdit_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = GetFirstSelectedRuleItem();
+            if (item == null)
+                return;
+            HandleRule rule = (HandleRule)item.Tag;
+            if (formRule == null)
+            {
+                formRule = new FormRule();
+                formRule.OnSaveRule += AfterSaveRule;
+                formRule.FormClosed += AfterCloseForm;
+            }
+            formRule.Rule = rule;
+            formRule.PresetFile = rulesManager;
+            formRule.Show();
+            formRule.BringToFront();
+        }
+
+        private void AfterSaveRule(object sender, HandleRule rule)
+        {
+            var item = FindListItemByRule(rule);
+            if (item != null)
+            {
+                FillRule(item, rule);
+            }
+        }
+
+        private void AfterCloseForm(object sender, FormClosedEventArgs e)
+        {
+            if (sender == formRule)
+            {
+                formRule.OnSaveRule -= AfterSaveRule;
+                formRule.FormClosed -= AfterCloseForm;
+                formRule = null;
             }
         }
     }
+
 }
