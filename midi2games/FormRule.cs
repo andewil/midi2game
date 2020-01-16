@@ -19,48 +19,103 @@ namespace midi2games
             InitActionTypes();
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
-        {
-            //
-        }
-
+        /// <summary>
+        /// Information about class and additional form class for type rule
+        /// </summary>
+        private RuleClassRecord activeRuleClassRecord;
+        /// <summary>
+        /// Instance of form (if exists) for selected type rule
+        /// </summary>
+        private Form ruleAdditionalForm;
+        /// <summary>
+        /// Instance of form (if exists) for selected type action
+        /// </summary>
+        private Form actionAdditionalForm;
+        /// <summary>
+        /// For editing: original rule
+        /// </summary>
         private HandleRule rule;
+        /// <summary>
+        /// Instance of rule. If "edit rule" operation called than workingRule will be copy of original rule
+        /// </summary>
+        private HandleRule workingRule;
+
+        public event IndexedRuleEventHandler OnSaveRule;
+
+        /// <summary>
+        /// For editing: original rule
+        /// </summary>
         public HandleRule Rule
         {
             get { return rule; }
             set
             {
                 rule = value;
-                if (rule != null) {
-                    editName.Text = rule.RuleName;
-                    editStopProcessing.Checked = rule.StopProcessing;
-                    // find class of rule
+                EditRule = rule;
+            }
+        }
+
+        /// <summary>
+        /// Flag is true, when setting new value of rule. It needs to avoid UI events of changing indexes in ListBoxes, ComboBoxes
+        /// </summary>
+        private Boolean blockUIChange = false;
+
+        /// <summary>
+        /// Instance of rule. If "edit rule" operation called than workingRule will be copy of original rule
+        /// </summary>
+        public HandleRule EditRule
+        {
+            get { return workingRule; }
+            set
+            {
+                if (value == null)
+                {
+                    workingRule = null;
+                    return;
+                }
+                workingRule = (HandleRule)value.Clone();
+                // block UI event handlers
+                blockUIChange = true;
+                if (workingRule != null)
+                {
+                    // set common rule data
+                    editName.Text = workingRule.RuleName;
+                    editStopProcessing.Checked = workingRule.StopProcessing;
+                    // find class of rule in ListBox, and select it
                     for (int i = 0; i < listBoxRuleType.Items.Count - 1; i++)
                     {
                         RuleClassRecord rec = (RuleClassRecord)listBoxRuleType.Items[i];
-                        if (rec.ruleClass == rule.GetType())
+                        if (rec.ruleClass == workingRule.GetType())
                         {
                             listBoxRuleType.SelectedIndex = i;
                             break;
                         }
                     }
+                    // set rule to additional rule form
+                    IFormRule ifrm = ruleAdditionalForm as IFormRule;
+                    if (ifrm != null)
+                    {
+                        ifrm.SetRule(workingRule);
+                    }
                 }
+                // unblock UI event handlers
+                blockUIChange = false;
             }
         }
 
-        private RuleClassRecord activeRuleClassRecord;
-        private Form ruleForm;
-        private Form actionForm;
+        /// <summary>
+        /// Instance of rule information (additional forms, visible name)
+        /// </summary>
         public RuleClassRecord ActiveRuleClassRecord
         {
             get { return activeRuleClassRecord; }
             set
             {
-                if (ruleForm != null)
+                if (ruleAdditionalForm != null)
                 {
-                    ruleForm.Hide();
-                    ruleForm.Dispose();
-                    ruleForm = null;
+                    ruleAdditionalForm.Hide();
+                    ruleAdditionalForm.Dispose();
+                    ruleAdditionalForm = null;
                 }
                 activeRuleClassRecord = value;
                 if (activeRuleClassRecord != null)
@@ -74,12 +129,20 @@ namespace midi2games
                         inst.FormBorderStyle = FormBorderStyle.None;
                         inst.Dock = DockStyle.Fill;
                         inst.Show();
-                        ruleForm = inst;
+                        ruleAdditionalForm = inst;
+                        IFormRule ifrm = ruleAdditionalForm as IFormRule;
+                        if (ifrm != null)
+                        {
+                            ifrm.SetRule(EditRule);
+                        }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Current preset file, which contains information of presets and rules
+        /// </summary>
         public PresetFile PresetFile { get; set; }
         public FormMidi2Game MainForm { get; set; }
         private RuleTypeManager ruleTypeManager = new RuleTypeManager();
@@ -99,14 +162,26 @@ namespace midi2games
 
         private void tsbSave_Click(object sender, EventArgs e)
         {
-            if (rule == null)
+            if (EditRule == null)
                 return;
-            rule.RuleName = editName.Text;
-            rule.StopProcessing = editStopProcessing.Checked;
-            OnSaveRule?.Invoke(this, rule);
+            EditRule.RuleName = editName.Text;
+            EditRule.StopProcessing = editStopProcessing.Checked;
+            IFormRule ifrm = ruleAdditionalForm as IFormRule;
+            if (ifrm != null)
+            {
+                ifrm.SaveRule();
+            }
+            
+            // Change object in storage, if 
+            if ((Rule != null) && (PresetFile != null))
+            {
+                PresetFile.ReplaceRule(Rule, EditRule);
+                Rule = EditRule;
+                int index = PresetFile.GetIndexByRule(Rule);
+                OnSaveRule?.Invoke(this, Rule, index);
+            }
+            
         }
-
-        public event RuleEventHandler OnSaveRule;
 
         private void tsbPrevRule_Click(object sender, EventArgs e)
         {
@@ -130,9 +205,20 @@ namespace midi2games
 
         private void listBoxRuleType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBoxRuleType.SelectedIndex < 0)
+            //if (blockUIChange)
+            //    return;
+
+            if (listBoxRuleType.SelectedIndex < 0) {
+                ActiveRuleClassRecord = null;
                 return;
+                // TODO: hide all elements, clear active records
+            }
+            // set selected rule information
             ActiveRuleClassRecord = (RuleClassRecord)listBoxRuleType.Items[listBoxRuleType.SelectedIndex];
+            // change EditRule to new type
+            var tmpRule = (HandleRule) Activator.CreateInstance(ActiveRuleClassRecord.ruleClass);
+            tmpRule.CopyHeadInformationFrom(EditRule);
+            EditRule = tmpRule;
         }
     }
 }

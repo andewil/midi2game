@@ -36,6 +36,9 @@ namespace midi2games
         void InitRulesManager()
         {
             var f = new PresetFile();
+            f.Author = "Andewil";
+            f.Version = "1.0";
+            f.Comment = "For tests only";
 
             var r1 = new ControlValueIncreaceRule();
             r1.ControlNumber = 50;
@@ -448,13 +451,13 @@ namespace midi2games
             formRule.BringToFront();
         }
 
-        private void AfterSaveRule(object sender, HandleRule rule)
+        private void AfterSaveRule(object sender, HandleRule rule, int index)
         {
-            var item = FindListItemByRule(rule);
-            if (item != null)
-            {
-                FillRule(item, rule);
-            }
+            // set saved rule to ListItem, because new rule object was created
+            ListViewItem item = listViewRules.Items[index];
+            item.Tag = rule;
+            FillRule(item, rule);
+            item.Text = index.ToString();
         }
 
         private void AfterCloseForm(object sender, FormClosedEventArgs e)
@@ -465,6 +468,11 @@ namespace midi2games
                 formRule.FormClosed -= AfterCloseForm;
                 formRule = null;
             }
+        }
+
+        private void tsbNex_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

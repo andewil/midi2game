@@ -1,7 +1,8 @@
 ﻿using Melanchall.DryWetMidi.Core;
 using NLog;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -19,20 +20,66 @@ namespace midi2games
     [XmlInclude(typeof(AnyMidiEventRule))]
     [XmlInclude(typeof(ProgramChangeRule))]
 
-    [XmlInclude(typeof(RuleAction))]
+    [XmlInclude(typeof(HandleRuleAction))]
     [XmlInclude(typeof(RuleActionKey))]
     [XmlInclude(typeof(RuleActionKey))]
     [XmlInclude(typeof(RuleActionMouseOffset))]
-    [XmlInclude(typeof(RuleActionMouseAbs))]
-    public class HandleRule
+    [XmlInclude(typeof(RuleActionMouseAbs))]    
+    public class HandleRule : ICloneable
     {
         public string RuleName { get; set; }
-
-        public RuleAction Action {get; set; }
+        public HandleRuleAction Action {get; set; }
         public Boolean StopProcessing { get; set; } = true;
+        public HandleRule()
+        {
+            _sValues = new Collection<HandleRuleProperty>();
+        }
+
         public virtual Boolean CheckMatch(object sender, MidiEvent midiEvent)
         {
             return false;
+        }
+
+        public HandleRuleProperty FindProperty(string name)
+        {
+            foreach (HandleRuleProperty item in _sValues)
+                if (string.Equals(name, item.Name))
+                    return item;
+            return null;
+        }
+
+        public void SetValue(string name, int value)
+        {
+            HandleRuleProperty p = FindProperty(name);
+            if (p == null)
+            {
+                p = new HandleRuleProperty();               
+                p.Name = name;
+                _sValues.Add(p);
+            }
+            p.Value = value;
+        }
+
+        public int GetValue(string name)
+        {
+            HandleRuleProperty p = FindProperty(name);
+            if (p == null)
+            {
+                p = new HandleRuleProperty();
+                p.Name = name;
+                _sValues.Add(p);
+            }
+            return p.Value;
+        }
+
+        public object Clone()
+        {
+            var dstObj = (HandleRule) MemberwiseClone();
+            if (Action != null) {
+                var dstAction = (HandleRuleAction)Action.Clone();
+                dstObj.Action = dstAction;
+            }
+            return dstObj;
         }
 
         public virtual string GetHumanName()
@@ -40,15 +87,62 @@ namespace midi2games
             return "<abstract rule>";
         }
 
+        public virtual void CopyHeadInformationFrom(HandleRule source)
+        {
+            StopProcessing = source.StopProcessing;
+            if (source.Action != null) {
+                var a = (HandleRuleAction)source.Action.Clone();
+                Action = a;
+            }
+            SValues = source.SValues;
+        }
+
+        private Collection<HandleRuleProperty> _sValues;
+
+        [XmlArray("SValues"), XmlArrayItem(typeof(HandleRuleProperty), ElementName = "Item")]
+        public Collection<HandleRuleProperty> SValues
+        {
+            get { return _sValues; }
+            set
+            {
+                _sValues.Clear();
+                if (value != null)
+                    foreach (HandleRuleProperty item in value)
+                    {
+                        var v = new HandleRuleProperty(item.Name, item.Value);
+                        _sValues.Add(v);
+                    }
+            }
+        }
+
+        //[XmlArray("DValues"), XmlArrayItem(typeof(KeyValuePair<string, int>), ElementName = "Item")]
+        //public StringIntDictionary DValues
+        //{
+        //    get { return _values; }
+        //    set
+        //    {
+        //        _values.Clear();
+        //        if (value != null)
+        //            foreach (KeyValuePair<string, int> item in value)
+        //            {
+        //                _values.Add(item.Key, item.Value);
+        //            }
+        //    }
+        //}
     }
 
     public class NoteOnRule : HandleRule
     {
-        public int Note { get; set; }
+        [XmlIgnore]
+        public int Note {
+            get => GetValue("Note");
+            set => SetValue("Note", value);
+        }
         public NoteOnRule() { }
         public NoteOnRule(int noteValue)
         {
             Note = noteValue;
+            SetValue("Note", noteValue);
         }
 
         public override bool CheckMatch(object sender, MidiEvent midiEvent)
@@ -68,11 +162,17 @@ namespace midi2games
 
     public class NoteOffRule : HandleRule
     {
-        public int Note { get; set; }
+        [XmlIgnore]
+        public int Note
+        {
+            get => GetValue("Note");
+            set => SetValue("Note", value);
+        }
         public NoteOffRule() { }
         public NoteOffRule(int noteValue)
         {
             Note = noteValue;
+            SetValue("Note", noteValue);
         }
 
         public override bool CheckMatch(object sender, MidiEvent midiEvent)
@@ -92,8 +192,20 @@ namespace midi2games
 
     public class ControlValueRule : HandleRule
     {
-        public int ControlNumber { get; set; }
-        public int ControlValue { get; set; }
+        [XmlIgnore]
+        public int ControlNumber
+        {
+            get => GetValue("ControlNumber");
+            set => SetValue("ControlNumber", value);
+        }
+
+        [XmlIgnore]
+        public int ControlValue
+        {
+            get => GetValue("ControlValue");
+            set => SetValue("ControlValue", value);
+        }
+
         public override Boolean CheckMatch(object sender, MidiEvent midiEvent)
         {
             if (midiEvent.EventType != MidiEventType.ControlChange)
@@ -123,7 +235,13 @@ namespace midi2games
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private int previousControlValue = 0;
-        public int ControlNumber { get; set; }
+
+        [XmlIgnore]
+        public int ControlNumber
+        {
+            get => GetValue("ControlNumber");
+            set => SetValue("ControlNumber", value);
+        }
         public override Boolean CheckMatch(object sender, MidiEvent midiEvent)
         {
             if (midiEvent.EventType != MidiEventType.ControlChange)
@@ -149,7 +267,14 @@ namespace midi2games
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private int previousControlValue = 0;
-        public int ControlNumber { get; set; }
+
+        [XmlIgnore]
+        public int ControlNumber
+        {
+            get => GetValue("ControlNumber");
+            set => SetValue("ControlNumber", value);
+        }
+
         public override Boolean CheckMatch(object sender, MidiEvent midiEvent)
         {
             if (midiEvent.EventType != MidiEventType.ControlChange)
@@ -199,91 +324,13 @@ namespace midi2games
             return $"Any MIDI event";
         }
 
-        public int ProgramNumber { get; set; }
-    }
-
-    public abstract class RuleAction
-    {
-        /// <summary>
-        /// Execute action
-        /// </summary>
-        public abstract void Execute();
-
-        /// <summary>
-        /// Get humanize description of action
-        /// </summary>
-        /// <returns>String</returns>
-        public abstract string GetHumanName();
-    }
-
-    public class RuleActionKey : RuleAction
-    {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        public string KeysToSend { get; set; }
-        public override void Execute()
-        {
-            EmulateKeyPress(KeysToSend);
-            //throw new NotImplementedException();
-        }
-        public RuleActionKey() { }
-        public RuleActionKey(string keys)
-        {
-            KeysToSend = keys;
-        }
-
-        private void EmulateKeyPress(string s)
-        {
-            SendKeys.SendWait(s);
-            logger.Debug("Key press : " + s);
-        }
-
-        public override string GetHumanName()
-        {
-            return "Key press: " + KeysToSend;
+        [XmlIgnore]
+        public int ProgramNumber {
+            get { return GetValue("ProgramNumber"); }
+            set { SetValue("ProgramNumber", value); }
         }
     }
 
-    public class RuleActionMouseOffset : RuleAction
-    {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        public Orientation Direction { get; set; }
-        public int Offset { get; set; }
-        public override void Execute()
-        {
-            Cursor cursor = new Cursor(Cursor.Current.Handle);
-            if (Direction == Orientation.Horizontal)
-            {
-                Cursor.Position = new System.Drawing.Point(Cursor.Position.X + Offset, Cursor.Position.Y);
-            } else
-            {
-                Cursor.Position = new System.Drawing.Point(Cursor.Position.X, Cursor.Position.Y + Offset);
-            }
-        }
-        public RuleActionMouseOffset() { }
-
-        public override string GetHumanName()
-        {
-            return $"Mouse offset ({Direction.ToString()}, {Offset})";
-        }
-    }
-
-    public class RuleActionMouseAbs : RuleAction
-    {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        public int X { get; set; }
-        public int Y { get; set; }
-        public override void Execute()
-        {
-            Cursor cursor = new Cursor(Cursor.Current.Handle);
-            Cursor.Position = new System.Drawing.Point(X, Y);           
-        }
-        public RuleActionMouseAbs() { }
-
-        public override string GetHumanName()
-        {
-            return $"Mouse absolute position ({X}, {Y})";
-        }
-    }
 
     public class RuleClassRecord
     {
@@ -304,36 +351,15 @@ namespace midi2games
         }
     }
 
-    public class RuleTypeManager
+    public class HandleRuleProperty
     {
-        public List<RuleClassRecord> ruleTypes = new List<RuleClassRecord>();
-        public List<Type> actionTypes = new List<Type>();
-        public RuleTypeManager()
+        public string Name { get; set; }
+        public int Value { get; set; }
+        public HandleRuleProperty() { }
+        public HandleRuleProperty(string name, int value)
         {
-            InitBasicRuleClasses();
-            InitBasicActionClasses();
-        }
-
-        public void RegisterRuleType(RuleClassRecord record)
-        {
-            ruleTypes.Add(record);
-        }
-
-        public void InitBasicRuleClasses()
-        {            
-            RegisterRuleType(new RuleClassRecord(typeof(NoteOnRule), "NoteOn", typeof(FormRuleNote)));
-            RegisterRuleType(new RuleClassRecord(typeof(NoteOffRule), "NoteOff", typeof(FormRuleNote)));
-            RegisterRuleType(new RuleClassRecord(typeof(ControlValueRule), "Control value match", typeof(FormControlValeMatch)));
-            RegisterRuleType(new RuleClassRecord(typeof(ControlValueDecreaceRule), "Control value decrease", typeof(FormControlValueIncDec)));
-            RegisterRuleType(new RuleClassRecord(typeof(ControlValueIncreaceRule), "Control value increase", typeof(FormControlValueIncDec)));
-            RegisterRuleType(new RuleClassRecord(typeof(AnyMidiEventRule), "Any MIDI event", null));
-            RegisterRuleType(new RuleClassRecord(typeof(ProgramChangeRule), "Program change", null));
-        }
-
-        public void InitBasicActionClasses()
-        {
-
+            Name = name;
+            Value = value;
         }
     }
-
 }

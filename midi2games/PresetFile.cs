@@ -16,12 +16,17 @@ namespace midi2games
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Rules"), XmlArrayItem(typeof(HandleRule), ElementName = "Rule")]
-        public ObservableCollection<HandleRule> rulesStorage = new ObservableCollection<HandleRule>();
         public PresetFile()
         {
             
         }
+
+        public string Author { get; set; }
+        public string Version { get; set; }
+        public string Comment { get; set; }
+
+        [XmlArray("Rules"), XmlArrayItem(typeof(HandleRule), ElementName = "Rule")]
+        public ObservableCollection<HandleRule> rulesStorage = new ObservableCollection<HandleRule>();
 
         public void AddRule(HandleRule rule)
         {
@@ -43,7 +48,21 @@ namespace midi2games
             return rulesStorage.IndexOf(rule);
         }
 
-        private MidiHandler handler;
+        public void ReplaceRule(int index, HandleRule replacement)
+        {
+            var removingItem = rulesStorage[index];
+            rulesStorage.Insert(index, replacement);
+            rulesStorage.Remove(item: removingItem);
+        }
+
+        public void ReplaceRule(HandleRule oldRule, HandleRule newRule)
+        {
+            int index = rulesStorage.IndexOf(oldRule);
+            if (index < 0)
+                index = rulesStorage.Count;
+            rulesStorage.Insert(index, newRule);
+            rulesStorage.Remove(oldRule);
+        }
 
         public string SerializeXml()
         {

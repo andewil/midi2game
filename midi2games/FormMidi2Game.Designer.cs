@@ -76,6 +76,8 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbRuleUp = new System.Windows.Forms.ToolStripButton();
             this.tsbRuleDown = new System.Windows.Forms.ToolStripButton();
+            this.tsbNex = new System.Windows.Forms.ToolStripButton();
+            this.tsbEdit = new System.Windows.Forms.ToolStripButton();
             this.tsbRuleDelete = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listViewPresets = new System.Windows.Forms.ListView();
@@ -84,13 +86,11 @@
             this.chName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chAction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListGR = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusDevice = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSignal = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdate = new System.Windows.Forms.Timer(this.components);
-            this.imageListGR = new System.Windows.Forms.ImageList(this.components);
-            this.tsbNex = new System.Windows.Forms.ToolStripButton();
-            this.tsbEdit = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -473,6 +473,24 @@
             this.tsbRuleDown.Text = "tsbRuleDown";
             this.tsbRuleDown.Click += new System.EventHandler(this.tsbRuleDown_Click);
             // 
+            // tsbNex
+            // 
+            this.tsbNex.Image = ((System.Drawing.Image)(resources.GetObject("tsbNex.Image")));
+            this.tsbNex.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbNex.Name = "tsbNex";
+            this.tsbNex.Size = new System.Drawing.Size(51, 22);
+            this.tsbNex.Text = "New";
+            this.tsbNex.Click += new System.EventHandler(this.tsbNex_Click);
+            // 
+            // tsbEdit
+            // 
+            this.tsbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsbEdit.Image")));
+            this.tsbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbEdit.Name = "tsbEdit";
+            this.tsbEdit.Size = new System.Drawing.Size(47, 22);
+            this.tsbEdit.Text = "Edit";
+            this.tsbEdit.Click += new System.EventHandler(this.tsbEdit_Click);
+            // 
             // tsbRuleDelete
             // 
             this.tsbRuleDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbRuleDelete.Image")));
@@ -554,6 +572,13 @@
             this.chAction.Text = "Action";
             this.chAction.Width = 150;
             // 
+            // imageListGR
+            // 
+            this.imageListGR.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListGR.ImageStream")));
+            this.imageListGR.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListGR.Images.SetKeyName(0, "green16.png");
+            this.imageListGR.Images.SetKeyName(1, "red16.png");
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -582,30 +607,6 @@
             this.timerUpdate.Enabled = true;
             this.timerUpdate.Interval = 300;
             this.timerUpdate.Tick += new System.EventHandler(this.timerUpdate_Tick);
-            // 
-            // imageListGR
-            // 
-            this.imageListGR.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListGR.ImageStream")));
-            this.imageListGR.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListGR.Images.SetKeyName(0, "green16.png");
-            this.imageListGR.Images.SetKeyName(1, "red16.png");
-            // 
-            // tsbNex
-            // 
-            this.tsbNex.Image = ((System.Drawing.Image)(resources.GetObject("tsbNex.Image")));
-            this.tsbNex.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbNex.Name = "tsbNex";
-            this.tsbNex.Size = new System.Drawing.Size(51, 22);
-            this.tsbNex.Text = "New";
-            // 
-            // tsbEdit
-            // 
-            this.tsbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsbEdit.Image")));
-            this.tsbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbEdit.Name = "tsbEdit";
-            this.tsbEdit.Size = new System.Drawing.Size(47, 22);
-            this.tsbEdit.Text = "Edit";
-            this.tsbEdit.Click += new System.EventHandler(this.tsbEdit_Click);
             // 
             // FormMidi2Game
             // 
