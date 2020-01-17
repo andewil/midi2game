@@ -43,6 +43,7 @@ namespace midi2games
         public FormMonitor formMonitor;
         public FormRule formRule;
         private MidiHandler midiHandler;
+        private const string FilesFilter = "M2G files(*.m2g)|*.m2g|All files(*.*)|*.*";
         #endregion
 
         #region methods
@@ -386,11 +387,21 @@ namespace midi2games
             rulesManager.Clear();
             RefreshRules();
         }
+        
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var rm = PresetFile.DeserializeFromFile(AppUtils.GetPresetsDirectory() + "/test.xml");
-            MessageBox.Show(rm.SerializeXml());
-            SetPresetFile(rm);
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = FilesFilter;
+                dialog.FilterIndex = 1;
+                dialog.InitialDirectory = AppUtils.GetBaseDataDirectory() + "\\presets";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    logger.Info("Open file: " + dialog.FileName);
+                    var rm = PresetFile.DeserializeFromFile(dialog.FileName);
+                    SetPresetFile(rm);
+                }
+            }
         }
         private void tsbRuleUp_Click(object sender, EventArgs e)
         {
@@ -498,5 +509,10 @@ namespace midi2games
             appSettings.LastDeviceName = device.Name;
         }
         #endregion
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //
+        }
     }
 }

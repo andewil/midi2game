@@ -36,17 +36,12 @@
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +66,6 @@
             this.tsComboBoxDevice = new System.Windows.Forms.ToolStripComboBox();
             this.tsbOpenDevice = new System.Windows.Forms.ToolStripButton();
             this.tsbCloseDevice = new System.Windows.Forms.ToolStripButton();
-            this.tsbOpenDataDirectory = new System.Windows.Forms.ToolStripButton();
             this.tsbMonitor = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbRuleUp = new System.Windows.Forms.ToolStripButton();
@@ -91,6 +85,19 @@
             this.statusDevice = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusSignal = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdate = new System.Windows.Forms.Timer(this.components);
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.tsbOpenFile = new System.Windows.Forms.ToolStripButton();
+            this.tsbSaveFile = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.openDataDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mIDIMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tslDevice = new System.Windows.Forms.ToolStripLabel();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStripMain.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -99,6 +106,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -137,8 +145,6 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem,
             this.fileToolStripMenuItem1,
             this.editToolStripMenuItem,
             this.toolsToolStripMenuItem,
@@ -149,18 +155,6 @@
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuMain";
             // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
             // fileToolStripMenuItem1
             // 
             this.fileToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -169,9 +163,6 @@
             this.toolStripSeparator,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.printToolStripMenuItem,
-            this.printPreviewToolStripMenuItem,
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
@@ -194,14 +185,14 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(177, 6);
             // 
             // saveToolStripMenuItem
             // 
@@ -209,47 +200,26 @@
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "&Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
-            // 
-            // printToolStripMenuItem
-            // 
-            this.printToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printToolStripMenuItem.Image")));
-            this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.printToolStripMenuItem.Text = "&Print";
-            // 
-            // printPreviewToolStripMenuItem
-            // 
-            this.printPreviewToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripMenuItem.Image")));
-            this.printPreviewToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.printPreviewToolStripMenuItem.Text = "Print Pre&view";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // editToolStripMenuItem
@@ -327,6 +297,8 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mIDIMonitorToolStripMenuItem,
+            this.openDataDirectoryToolStripMenuItem,
             this.customizeToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -336,13 +308,13 @@
             // customizeToolStripMenuItem
             // 
             this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.customizeToolStripMenuItem.Text = "&Customize";
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
             // helpToolStripMenuItem1
@@ -388,22 +360,26 @@
             // 
             // toolStripMain
             // 
+            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbOpenFile,
+            this.tsbSaveFile,
+            this.toolStripSeparator6,
+            this.tslDevice,
             this.tsComboBoxDevice,
             this.tsbOpenDevice,
             this.tsbCloseDevice,
-            this.tsbOpenDataDirectory,
             this.tsbMonitor});
             this.toolStripMain.Location = new System.Drawing.Point(0, 24);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(816, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(816, 54);
             this.toolStripMain.TabIndex = 2;
             // 
             // tsComboBoxDevice
             // 
             this.tsComboBoxDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tsComboBoxDevice.Name = "tsComboBoxDevice";
-            this.tsComboBoxDevice.Size = new System.Drawing.Size(300, 25);
+            this.tsComboBoxDevice.Size = new System.Drawing.Size(300, 54);
             this.tsComboBoxDevice.SelectedIndexChanged += new System.EventHandler(this.tsComboBoxDevice_SelectedIndexChanged);
             // 
             // tsbOpenDevice
@@ -411,8 +387,9 @@
             this.tsbOpenDevice.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpenDevice.Image")));
             this.tsbOpenDevice.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOpenDevice.Name = "tsbOpenDevice";
-            this.tsbOpenDevice.Size = new System.Drawing.Size(56, 22);
+            this.tsbOpenDevice.Size = new System.Drawing.Size(40, 51);
             this.tsbOpenDevice.Text = "Open";
+            this.tsbOpenDevice.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbOpenDevice.Click += new System.EventHandler(this.tsbOpenDevice_Click);
             // 
             // tsbCloseDevice
@@ -420,26 +397,19 @@
             this.tsbCloseDevice.Image = ((System.Drawing.Image)(resources.GetObject("tsbCloseDevice.Image")));
             this.tsbCloseDevice.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCloseDevice.Name = "tsbCloseDevice";
-            this.tsbCloseDevice.Size = new System.Drawing.Size(56, 22);
+            this.tsbCloseDevice.Size = new System.Drawing.Size(40, 51);
             this.tsbCloseDevice.Text = "Close";
+            this.tsbCloseDevice.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbCloseDevice.Click += new System.EventHandler(this.tsbCloseDevice_Click);
-            // 
-            // tsbOpenDataDirectory
-            // 
-            this.tsbOpenDataDirectory.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpenDataDirectory.Image")));
-            this.tsbOpenDataDirectory.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbOpenDataDirectory.Name = "tsbOpenDataDirectory";
-            this.tsbOpenDataDirectory.Size = new System.Drawing.Size(132, 22);
-            this.tsbOpenDataDirectory.Text = "Open data directory";
-            this.tsbOpenDataDirectory.Click += new System.EventHandler(this.tsbOpenDataDirectory_Click);
             // 
             // tsbMonitor
             // 
             this.tsbMonitor.Image = ((System.Drawing.Image)(resources.GetObject("tsbMonitor.Image")));
             this.tsbMonitor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbMonitor.Name = "tsbMonitor";
-            this.tsbMonitor.Size = new System.Drawing.Size(98, 22);
+            this.tsbMonitor.Size = new System.Drawing.Size(82, 51);
             this.tsbMonitor.Text = "MIDI monitor";
+            this.tsbMonitor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbMonitor.Click += new System.EventHandler(this.tsbMonitor_Click);
             // 
             // toolStrip1
@@ -458,57 +428,63 @@
             // 
             // tsbRuleUp
             // 
+            this.tsbRuleUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbRuleUp.Image = ((System.Drawing.Image)(resources.GetObject("tsbRuleUp.Image")));
             this.tsbRuleUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRuleUp.Name = "tsbRuleUp";
-            this.tsbRuleUp.Size = new System.Drawing.Size(81, 22);
-            this.tsbRuleUp.Text = "tsbRuleUp";
+            this.tsbRuleUp.Size = new System.Drawing.Size(23, 22);
+            this.tsbRuleUp.Text = "Move up";
             this.tsbRuleUp.Click += new System.EventHandler(this.tsbRuleUp_Click);
             // 
             // tsbRuleDown
             // 
+            this.tsbRuleDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbRuleDown.Image = ((System.Drawing.Image)(resources.GetObject("tsbRuleDown.Image")));
             this.tsbRuleDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRuleDown.Name = "tsbRuleDown";
-            this.tsbRuleDown.Size = new System.Drawing.Size(97, 22);
-            this.tsbRuleDown.Text = "tsbRuleDown";
+            this.tsbRuleDown.Size = new System.Drawing.Size(23, 22);
+            this.tsbRuleDown.Text = "Move down";
             this.tsbRuleDown.Click += new System.EventHandler(this.tsbRuleDown_Click);
             // 
             // tsbNex
             // 
+            this.tsbNex.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbNex.Image = ((System.Drawing.Image)(resources.GetObject("tsbNex.Image")));
             this.tsbNex.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbNex.Name = "tsbNex";
-            this.tsbNex.Size = new System.Drawing.Size(51, 22);
+            this.tsbNex.Size = new System.Drawing.Size(23, 22);
             this.tsbNex.Text = "New";
             this.tsbNex.Click += new System.EventHandler(this.tsbNex_Click);
             // 
             // tsbEdit
             // 
+            this.tsbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsbEdit.Image")));
             this.tsbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbEdit.Name = "tsbEdit";
-            this.tsbEdit.Size = new System.Drawing.Size(47, 22);
+            this.tsbEdit.Size = new System.Drawing.Size(23, 22);
             this.tsbEdit.Text = "Edit";
             this.tsbEdit.Click += new System.EventHandler(this.tsbEdit_Click);
             // 
             // tsbRuleDelete
             // 
+            this.tsbRuleDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbRuleDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbRuleDelete.Image")));
             this.tsbRuleDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRuleDelete.Name = "tsbRuleDelete";
-            this.tsbRuleDelete.Size = new System.Drawing.Size(60, 22);
+            this.tsbRuleDelete.Size = new System.Drawing.Size(23, 22);
             this.tsbRuleDelete.Text = "Delete";
             this.tsbRuleDelete.Click += new System.EventHandler(this.tsbRuleDelete_Click);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 78);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.toolStrip2);
             this.splitContainer1.Panel1.Controls.Add(this.listViewPresets);
             this.splitContainer1.Panel1MinSize = 100;
             // 
@@ -517,7 +493,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.listViewRules);
             this.splitContainer1.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer1.Panel2MinSize = 300;
-            this.splitContainer1.Size = new System.Drawing.Size(816, 431);
+            this.splitContainer1.Size = new System.Drawing.Size(816, 402);
             this.splitContainer1.SplitterDistance = 272;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 6;
@@ -528,7 +504,7 @@
             this.listViewPresets.HideSelection = false;
             this.listViewPresets.Location = new System.Drawing.Point(0, 0);
             this.listViewPresets.Name = "listViewPresets";
-            this.listViewPresets.Size = new System.Drawing.Size(272, 431);
+            this.listViewPresets.Size = new System.Drawing.Size(272, 402);
             this.listViewPresets.TabIndex = 0;
             this.listViewPresets.UseCompatibleStateImageBehavior = false;
             // 
@@ -546,7 +522,7 @@
             this.listViewRules.Location = new System.Drawing.Point(0, 25);
             this.listViewRules.Name = "listViewRules";
             this.listViewRules.ShowGroups = false;
-            this.listViewRules.Size = new System.Drawing.Size(534, 406);
+            this.listViewRules.Size = new System.Drawing.Size(534, 377);
             this.listViewRules.SmallImageList = this.imageListGR;
             this.listViewRules.StateImageList = this.imageListGR;
             this.listViewRules.TabIndex = 5;
@@ -609,6 +585,117 @@
             this.timerUpdate.Interval = 300;
             this.timerUpdate.Tick += new System.EventHandler(this.timerUpdate_Tick);
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Filter = "m2g|*.m2g";
+            // 
+            // tsbOpenFile
+            // 
+            this.tsbOpenFile.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpenFile.Image")));
+            this.tsbOpenFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOpenFile.Name = "tsbOpenFile";
+            this.tsbOpenFile.Size = new System.Drawing.Size(40, 51);
+            this.tsbOpenFile.Text = "Open";
+            this.tsbOpenFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbOpenFile.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // tsbSaveFile
+            // 
+            this.tsbSaveFile.Image = ((System.Drawing.Image)(resources.GetObject("tsbSaveFile.Image")));
+            this.tsbSaveFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSaveFile.Name = "tsbSaveFile";
+            this.tsbSaveFile.Size = new System.Drawing.Size(36, 51);
+            this.tsbSaveFile.Text = "Save";
+            this.tsbSaveFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbSaveFile.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 54);
+            // 
+            // openDataDirectoryToolStripMenuItem
+            // 
+            this.openDataDirectoryToolStripMenuItem.Image = global::midi2games.Properties.Resources.directory16;
+            this.openDataDirectoryToolStripMenuItem.Name = "openDataDirectoryToolStripMenuItem";
+            this.openDataDirectoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDataDirectoryToolStripMenuItem.Text = "Open data directory";
+            this.openDataDirectoryToolStripMenuItem.Click += new System.EventHandler(this.tsbOpenDataDirectory_Click);
+            // 
+            // mIDIMonitorToolStripMenuItem
+            // 
+            this.mIDIMonitorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("mIDIMonitorToolStripMenuItem.Image")));
+            this.mIDIMonitorToolStripMenuItem.Name = "mIDIMonitorToolStripMenuItem";
+            this.mIDIMonitorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mIDIMonitorToolStripMenuItem.Text = "MIDI monitor";
+            this.mIDIMonitorToolStripMenuItem.Click += new System.EventHandler(this.tsbMonitor_Click);
+            // 
+            // tslDevice
+            // 
+            this.tslDevice.Name = "tslDevice";
+            this.tslDevice.Size = new System.Drawing.Size(42, 51);
+            this.tslDevice.Text = "Device";
+            // 
+            // toolStrip2
+            // 
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripButton4,
+            this.toolStripButton5});
+            this.toolStrip2.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(272, 25);
+            this.toolStrip2.TabIndex = 1;
+            this.toolStrip2.Text = "toolStrip2";
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "toolStripButton1";
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton2.Text = "toolStripButton2";
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton3.Text = "toolStripButton3";
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton4.Text = "toolStripButton4";
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton5.Text = "toolStripButton5";
+            // 
             // FormMidi2Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -629,12 +716,15 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -648,13 +738,10 @@
         private System.Windows.Forms.ToolStripPanel LeftToolStripPanel;
         private System.Windows.Forms.ToolStripContentPanel ContentPanel;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStrip toolStripMain;
         private System.Windows.Forms.ToolStripComboBox tsComboBoxDevice;
         private System.Windows.Forms.ToolStripButton tsbOpenDevice;
         private System.Windows.Forms.ToolStripButton tsbCloseDevice;
-        private System.Windows.Forms.ToolStripButton tsbOpenDataDirectory;
         private System.Windows.Forms.ToolStripButton tsbMonitor;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
@@ -662,9 +749,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem printPreviewToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
@@ -703,6 +787,19 @@
         private System.Windows.Forms.ImageList imageListGR;
         private System.Windows.Forms.ToolStripButton tsbNex;
         private System.Windows.Forms.ToolStripButton tsbEdit;
+        private System.Windows.Forms.ToolStripButton tsbOpenFile;
+        private System.Windows.Forms.ToolStripButton tsbSaveFile;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ToolStripMenuItem mIDIMonitorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openDataDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripLabel tslDevice;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
     }
 }
 
