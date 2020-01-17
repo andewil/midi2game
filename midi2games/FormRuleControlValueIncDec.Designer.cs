@@ -1,6 +1,6 @@
 ﻿namespace midi2games
 {
-    partial class FormControlValueIncDec
+    partial class FormRuleControlValueIncDec
     {
         /// <summary>
         /// Required designer variable.
@@ -34,10 +34,11 @@
             // 
             // editControlNumber
             // 
-            this.editControlNumber.Location = new System.Drawing.Point(124, 6);
+            this.editControlNumber.Location = new System.Drawing.Point(125, 10);
             this.editControlNumber.Name = "editControlNumber";
-            this.editControlNumber.Size = new System.Drawing.Size(135, 20);
+            this.editControlNumber.Size = new System.Drawing.Size(100, 20);
             this.editControlNumber.TabIndex = 0;
+            this.editControlNumber.TextChanged += new System.EventHandler(this.editControlNumber_TextChanged);
             // 
             // label1
             // 
@@ -48,14 +49,14 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Control number";
             // 
-            // FormControlValueIncDec
+            // FormRuleControlValueIncDec
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(444, 146);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.editControlNumber);
-            this.Name = "FormControlValueIncDec";
+            this.Name = "FormRuleControlValueIncDec";
             this.Text = "FormControlValueIncDec";
             this.ResumeLayout(false);
             this.PerformLayout();

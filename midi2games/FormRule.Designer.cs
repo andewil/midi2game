@@ -30,27 +30,27 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormRule));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.tabAdditionalProperties = new System.Windows.Forms.TabControl();
-            this.tabPageAdditionalPropertiesRule = new System.Windows.Forms.TabPage();
-            this.tabPageAdditionalPropertiesAction = new System.Windows.Forms.TabPage();
-            this.editName = new System.Windows.Forms.TextBox();
-            this.editStopProcessing = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.listBoxRuleType = new System.Windows.Forms.ListBox();
-            this.listBoxActionType = new System.Windows.Forms.ListBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.listBoxActionType = new System.Windows.Forms.ListBox();
+            this.listBoxRuleType = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.editStopProcessing = new System.Windows.Forms.CheckBox();
+            this.editName = new System.Windows.Forms.TextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
             this.tsbPrevRule = new System.Windows.Forms.ToolStripButton();
             this.tsbNextRule = new System.Windows.Forms.ToolStripButton();
+            this.panelAdditionRuleForm = new System.Windows.Forms.Panel();
+            this.panelAdditionalActionForm = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
-            this.tabAdditionalProperties.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panelAdditionalActionForm);
+            this.panel1.Controls.Add(this.panelAdditionRuleForm);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.listBoxActionType);
@@ -60,45 +60,53 @@
             this.panel1.Controls.Add(this.editName);
             this.panel1.Location = new System.Drawing.Point(8, 28);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(661, 242);
+            this.panel1.Size = new System.Drawing.Size(532, 362);
             this.panel1.TabIndex = 1;
             // 
-            // tabAdditionalProperties
+            // label3
             // 
-            this.tabAdditionalProperties.Controls.Add(this.tabPageAdditionalPropertiesRule);
-            this.tabAdditionalProperties.Controls.Add(this.tabPageAdditionalPropertiesAction);
-            this.tabAdditionalProperties.Location = new System.Drawing.Point(8, 276);
-            this.tabAdditionalProperties.Name = "tabAdditionalProperties";
-            this.tabAdditionalProperties.SelectedIndex = 0;
-            this.tabAdditionalProperties.Size = new System.Drawing.Size(661, 186);
-            this.tabAdditionalProperties.TabIndex = 2;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(292, 80);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(63, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Type action";
             // 
-            // tabPageAdditionalPropertiesRule
+            // label2
             // 
-            this.tabPageAdditionalPropertiesRule.Location = new System.Drawing.Point(4, 22);
-            this.tabPageAdditionalPropertiesRule.Name = "tabPageAdditionalPropertiesRule";
-            this.tabPageAdditionalPropertiesRule.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageAdditionalPropertiesRule.Size = new System.Drawing.Size(653, 160);
-            this.tabPageAdditionalPropertiesRule.TabIndex = 0;
-            this.tabPageAdditionalPropertiesRule.Text = "Rule";
-            this.tabPageAdditionalPropertiesRule.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(25, 80);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(51, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Type rule";
             // 
-            // tabPageAdditionalPropertiesAction
+            // listBoxActionType
             // 
-            this.tabPageAdditionalPropertiesAction.Location = new System.Drawing.Point(4, 22);
-            this.tabPageAdditionalPropertiesAction.Name = "tabPageAdditionalPropertiesAction";
-            this.tabPageAdditionalPropertiesAction.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageAdditionalPropertiesAction.Size = new System.Drawing.Size(653, 217);
-            this.tabPageAdditionalPropertiesAction.TabIndex = 1;
-            this.tabPageAdditionalPropertiesAction.Text = "Action";
-            this.tabPageAdditionalPropertiesAction.UseVisualStyleBackColor = true;
+            this.listBoxActionType.FormattingEnabled = true;
+            this.listBoxActionType.Location = new System.Drawing.Point(283, 96);
+            this.listBoxActionType.Name = "listBoxActionType";
+            this.listBoxActionType.Size = new System.Drawing.Size(232, 134);
+            this.listBoxActionType.TabIndex = 4;
+            this.listBoxActionType.SelectedIndexChanged += new System.EventHandler(this.listBoxActionType_SelectedIndexChanged);
             // 
-            // editName
+            // listBoxRuleType
             // 
-            this.editName.Location = new System.Drawing.Point(178, 21);
-            this.editName.Name = "editName";
-            this.editName.Size = new System.Drawing.Size(279, 20);
-            this.editName.TabIndex = 0;
+            this.listBoxRuleType.FormattingEnabled = true;
+            this.listBoxRuleType.Location = new System.Drawing.Point(21, 96);
+            this.listBoxRuleType.Name = "listBoxRuleType";
+            this.listBoxRuleType.Size = new System.Drawing.Size(232, 134);
+            this.listBoxRuleType.TabIndex = 3;
+            this.listBoxRuleType.SelectedIndexChanged += new System.EventHandler(this.listBoxRuleType_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(18, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Rule name";
             // 
             // editStopProcessing
             // 
@@ -110,49 +118,12 @@
             this.editStopProcessing.Text = "Stop further processign";
             this.editStopProcessing.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // editName
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Rule name";
-            // 
-            // listBoxRuleType
-            // 
-            this.listBoxRuleType.FormattingEnabled = true;
-            this.listBoxRuleType.Location = new System.Drawing.Point(178, 96);
-            this.listBoxRuleType.Name = "listBoxRuleType";
-            this.listBoxRuleType.Size = new System.Drawing.Size(232, 134);
-            this.listBoxRuleType.TabIndex = 3;
-            this.listBoxRuleType.SelectedIndexChanged += new System.EventHandler(this.listBoxRuleType_SelectedIndexChanged);
-            // 
-            // listBoxActionType
-            // 
-            this.listBoxActionType.FormattingEnabled = true;
-            this.listBoxActionType.Location = new System.Drawing.Point(419, 96);
-            this.listBoxActionType.Name = "listBoxActionType";
-            this.listBoxActionType.Size = new System.Drawing.Size(232, 134);
-            this.listBoxActionType.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(175, 80);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(51, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Type rule";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(416, 80);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Type action";
+            this.editName.Location = new System.Drawing.Point(178, 21);
+            this.editName.Name = "editName";
+            this.editName.Size = new System.Drawing.Size(337, 20);
+            this.editName.TabIndex = 0;
             // 
             // toolStrip1
             // 
@@ -162,7 +133,7 @@
             this.tsbNextRule});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(675, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(543, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -193,19 +164,33 @@
             this.tsbNextRule.Text = "Next rule";
             this.tsbNextRule.Click += new System.EventHandler(this.tsbNextRule_Click);
             // 
+            // panelAdditionRuleForm
+            // 
+            this.panelAdditionRuleForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelAdditionRuleForm.Location = new System.Drawing.Point(21, 246);
+            this.panelAdditionRuleForm.Name = "panelAdditionRuleForm";
+            this.panelAdditionRuleForm.Size = new System.Drawing.Size(232, 94);
+            this.panelAdditionRuleForm.TabIndex = 7;
+            // 
+            // panelAdditionalActionForm
+            // 
+            this.panelAdditionalActionForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelAdditionalActionForm.Location = new System.Drawing.Point(283, 246);
+            this.panelAdditionalActionForm.Name = "panelAdditionalActionForm";
+            this.panelAdditionalActionForm.Size = new System.Drawing.Size(232, 94);
+            this.panelAdditionalActionForm.TabIndex = 8;
+            // 
             // FormRule
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(675, 467);
+            this.ClientSize = new System.Drawing.Size(543, 397);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.tabAdditionalProperties);
             this.Controls.Add(this.panel1);
             this.Name = "FormRule";
             this.Text = "FormRule";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.tabAdditionalProperties.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -223,12 +208,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox editStopProcessing;
         private System.Windows.Forms.TextBox editName;
-        private System.Windows.Forms.TabControl tabAdditionalProperties;
-        private System.Windows.Forms.TabPage tabPageAdditionalPropertiesRule;
-        private System.Windows.Forms.TabPage tabPageAdditionalPropertiesAction;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton tsbSave;
         private System.Windows.Forms.ToolStripButton tsbPrevRule;
         private System.Windows.Forms.ToolStripButton tsbNextRule;
+        private System.Windows.Forms.Panel panelAdditionalActionForm;
+        private System.Windows.Forms.Panel panelAdditionRuleForm;
     }
 }

@@ -6,7 +6,7 @@ namespace midi2games
 {
     public abstract class HandleRuleAction : ICloneable
     {
-        public object Clone()
+        public virtual object Clone()
         {
             return this.MemberwiseClone();
         }
@@ -49,6 +49,11 @@ namespace midi2games
         {
             return "Key press: " + KeysToSend;
         }
+
+        public override object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     public class RuleActionMouseOffset : HandleRuleAction
@@ -74,6 +79,11 @@ namespace midi2games
         {
             return $"Mouse offset ({Direction.ToString()}, {Offset})";
         }
+
+        public override object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     public class RuleActionMouseAbs : HandleRuleAction
@@ -91,6 +101,11 @@ namespace midi2games
         public override string GetHumanName()
         {
             return $"Mouse absolute position ({X}, {Y})";
+        }
+
+        public override object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

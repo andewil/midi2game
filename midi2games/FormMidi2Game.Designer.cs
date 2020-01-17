@@ -184,7 +184,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -404,6 +404,7 @@
             this.tsComboBoxDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tsComboBoxDevice.Name = "tsComboBoxDevice";
             this.tsComboBoxDevice.Size = new System.Drawing.Size(300, 25);
+            this.tsComboBoxDevice.SelectedIndexChanged += new System.EventHandler(this.tsComboBoxDevice_SelectedIndexChanged);
             // 
             // tsbOpenDevice
             // 
@@ -619,6 +620,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "FormMidi2Game";
             this.Text = "MIDI2game";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMidi2Game_FormClosing);
             this.Load += new System.EventHandler(this.FormMidi2Game_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

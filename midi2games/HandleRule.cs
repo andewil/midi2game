@@ -60,6 +60,18 @@ namespace midi2games
             p.Value = value;
         }
 
+        public Boolean CheckValue(int value)
+        {
+            return ((value >= 0) && (value <= 127));
+        }
+
+        public void SetValueChecked(string name, int value)
+        {
+            if (!CheckValue(value))
+                throw new Exception($"Value {value} is not correct value. Value must be in 0 - 127");
+            SetValue(name, value);
+        }
+
         public int GetValue(string name)
         {
             HandleRuleProperty p = FindProperty(name);
@@ -95,6 +107,7 @@ namespace midi2games
                 Action = a;
             }
             SValues = source.SValues;
+            this.RuleName = source.RuleName;
         }
 
         private Collection<HandleRuleProperty> _sValues;
@@ -332,17 +345,17 @@ namespace midi2games
     }
 
 
-    public class RuleClassRecord
+    public class ClassRecord
     {
-        public Type ruleClass;
+        public Type classRecord;
         public string visibleName;
-        public Type formClass;
+        public Type classForm;
 
-        public RuleClassRecord(Type ruleClassArg, string visibleNameArg, Type formClassArg)
+        public ClassRecord(Type ruleClassArg, string visibleNameArg, Type formClassArg)
         {
-            ruleClass = ruleClassArg;
+            classRecord = ruleClassArg;
             visibleName = visibleNameArg;
-            formClass = formClassArg;
+            classForm = formClassArg;
         }
 
         public override string ToString()

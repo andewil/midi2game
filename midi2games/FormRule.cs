@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,7 +12,7 @@ using System.Windows.Forms;
 namespace midi2games
 {
     public partial class FormRule : Form
-    {
+    {        
         public FormRule()
         {
             InitializeComponent();
@@ -19,10 +20,16 @@ namespace midi2games
             InitActionTypes();
         }
 
+        #region fields definition  
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Information about class and additional form class for type rule
         /// </summary>
-        private RuleClassRecord activeRuleClassRecord;
+        private ClassRecord activeRuleClassRecord;
+        /// <summary>
+        /// Information about action
+        /// </summary>
+        private ClassRecord activeActionRecord;
         /// <summary>
         /// Instance of form (if exists) for selected type rule
         /// </summary>
@@ -38,9 +45,125 @@ namespace midi2games
         /// <summary>
         /// Instance of rule. If "edit rule" operation called than workingRule will be copy of original rule
         /// </summary>
-        private HandleRule workingRule;
-
+        private HandleRule editRule;
+        public PresetFile PresetFile { get; set; }
+        public FormMidi2Game MainForm { get; set; }
+        private RuleTypeManager ruleTypeManager = new RuleTypeManager();
+        /// <summary>
+        /// Flag is true, when setting new value of rule. It needs to avoid UI events of changing indexes in ListBoxes, ComboBoxes
+        /// </summary>
+        private Boolean blockUIChange = false;
         public event IndexedRuleEventHandler OnSaveRule;
+        #endregion
+
+        #region UI methods
+        private void SetListIndexRuleType(Type t)
+        {
+            for (int i = 0; i < listBoxRuleType.Items.Count; i++)
+            {
+                ClassRecord rec = (ClassRecord)listBoxRuleType.Items[i];
+                if (rec.classRecord == t)
+                {
+                    listBoxRuleType.SelectedIndex = i;
+                    return;
+                }
+            }
+            listBoxRuleType.SelectedIndex = -1;
+        }
+        private void SetListIndexActionType(Type t)
+        {
+            for (int i = 0; i < listBoxActionType.Items.Count; i++)
+            {
+                ClassRecord rec = (ClassRecord)listBoxActionType.Items[i];
+                if (rec.classRecord == t)
+                {
+                    // if called Previous or Next rule action, SelectedIndex may be same and ChangeSelected wouldn't be called
+                    // flagReinit used for set value in these cases
+                    Boolean flagReinit = listBoxActionType.SelectedIndex == i;
+                    listBoxActionType.SelectedIndex = i;
+                    if (flagReinit)
+                    {
+                        IFormAction ifrm = actionAdditionalForm as IFormAction;
+                        if (ifrm != null)
+                        {
+                            ifrm.SetAction(editRule.Action);
+                        }
+                    }
+                    return;
+                }
+            }
+            listBoxActionType.SelectedIndex = -1;
+        }
+        private void ShowAdditionalRuleForm(Type classForm)
+        {
+            Form inst = (Form)Activator.CreateInstance(classForm);
+            inst.TopLevel = false;
+            panelAdditionRuleForm.Controls.Add(inst);
+            inst.FormBorderStyle = FormBorderStyle.None;
+            inst.Dock = DockStyle.Fill;
+            inst.Show();
+            ruleAdditionalForm = inst;
+            IFormRule ifrm = ruleAdditionalForm as IFormRule;
+            if (ifrm != null)
+            {
+                ifrm.SetRule(EditRule);
+            }
+        }
+        private void ShowAdditionalActionForm(Type classForm)
+        {
+            Form inst = (Form)Activator.CreateInstance(classForm);
+            inst.TopLevel = false;
+            panelAdditionalActionForm.Controls.Add(inst);
+            inst.FormBorderStyle = FormBorderStyle.None;
+            inst.Dock = DockStyle.Fill;
+            inst.Show();
+            actionAdditionalForm = inst;
+            IFormAction ifrm = actionAdditionalForm as IFormAction;
+            if (ifrm != null)
+            {
+                ifrm.SetAction(EditRule.Action);
+            }
+        }
+        /// <summary>
+        /// Hide additional form of action
+        /// </summary>
+        private void HideAdditionalActionForm()
+        {
+            panelAdditionalActionForm.Controls.Remove(actionAdditionalForm);
+            actionAdditionalForm.Hide();
+            actionAdditionalForm.Dispose();
+            actionAdditionalForm = null;
+        }
+        /// <summary>
+        /// Hide additional form of rule
+        /// </summary>
+        private void HideAdditionalRuleForm()
+        {
+            panelAdditionalActionForm.Controls.Remove(ruleAdditionalForm);
+            ruleAdditionalForm.Dispose();
+            ruleAdditionalForm = null;
+        }
+        /// <summary>
+        /// Current preset file, which contains information of presets and rules
+        /// </summary>
+        private void InitRuleTypes()
+        {
+            for (int i = 0; i < ruleTypeManager.ruleTypes.Count; i++)
+            {
+                ClassRecord rec = ruleTypeManager.ruleTypes[i];
+                listBoxRuleType.Items.Add(rec);
+            }
+        }
+        private void InitActionTypes()
+        {
+            for (int i = 0; i < ruleTypeManager.actionTypes.Count; i++)
+            {
+                ClassRecord rec = ruleTypeManager.actionTypes[i];
+                listBoxActionType.Items.Add(rec);
+                logger.Debug(rec);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// For editing: original rule
@@ -54,124 +177,88 @@ namespace midi2games
                 EditRule = rule;
             }
         }
-
-        /// <summary>
-        /// Flag is true, when setting new value of rule. It needs to avoid UI events of changing indexes in ListBoxes, ComboBoxes
-        /// </summary>
-        private Boolean blockUIChange = false;
-
         /// <summary>
         /// Instance of rule. If "edit rule" operation called than workingRule will be copy of original rule
         /// </summary>
         public HandleRule EditRule
         {
-            get { return workingRule; }
+            get { return editRule; }
             set
             {
+                if (blockUIChange)
+                    return;
+
                 if (value == null)
                 {
-                    workingRule = null;
+                    editRule = null;
                     return;
                 }
-                workingRule = (HandleRule)value.Clone();
+                editRule = (HandleRule)value.Clone();
                 // block UI event handlers
                 blockUIChange = true;
-                if (workingRule != null)
+                if (editRule != null)
                 {
                     // set common rule data
-                    editName.Text = workingRule.RuleName;
-                    editStopProcessing.Checked = workingRule.StopProcessing;
+                    editName.Text = editRule.RuleName;
+                    editStopProcessing.Checked = editRule.StopProcessing;
                     // find class of rule in ListBox, and select it
-                    for (int i = 0; i < listBoxRuleType.Items.Count - 1; i++)
+                    SetListIndexRuleType(editRule.GetType());
+                    if (editRule.Action != null)
                     {
-                        RuleClassRecord rec = (RuleClassRecord)listBoxRuleType.Items[i];
-                        if (rec.ruleClass == workingRule.GetType())
-                        {
-                            listBoxRuleType.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                    // set rule to additional rule form
-                    IFormRule ifrm = ruleAdditionalForm as IFormRule;
-                    if (ifrm != null)
+                        SetListIndexActionType(editRule.Action.GetType());
+                    } else
                     {
-                        ifrm.SetRule(workingRule);
+                        SetListIndexActionType(null);
                     }
                 }
                 // unblock UI event handlers
                 blockUIChange = false;
             }
         }
-
         /// <summary>
         /// Instance of rule information (additional forms, visible name)
         /// </summary>
-        public RuleClassRecord ActiveRuleClassRecord
+        public ClassRecord ActiveRuleType
         {
             get { return activeRuleClassRecord; }
             set
             {
                 if (ruleAdditionalForm != null)
                 {
-                    ruleAdditionalForm.Hide();
-                    ruleAdditionalForm.Dispose();
-                    ruleAdditionalForm = null;
+                    HideAdditionalRuleForm();
                 }
                 activeRuleClassRecord = value;
-                if (activeRuleClassRecord != null)
+                if ((activeRuleClassRecord != null) && (activeRuleClassRecord.classForm != null))
                 {
-                    if (activeRuleClassRecord.formClass != null)
-                    {
-                        Form inst = (Form)Activator.CreateInstance(activeRuleClassRecord.formClass);
-                        inst.TopLevel = false;
-                        //inst.Parent = tabPageAdditionalPropertiesAction;
-                        tabPageAdditionalPropertiesRule.Controls.Add(inst);
-                        inst.FormBorderStyle = FormBorderStyle.None;
-                        inst.Dock = DockStyle.Fill;
-                        inst.Show();
-                        ruleAdditionalForm = inst;
-                        IFormRule ifrm = ruleAdditionalForm as IFormRule;
-                        if (ifrm != null)
-                        {
-                            ifrm.SetRule(EditRule);
-                        }
-                    }
+                    ShowAdditionalRuleForm(activeRuleClassRecord.classForm);
                 }
             }
         }
-
         /// <summary>
-        /// Current preset file, which contains information of presets and rules
+        /// Instance of rule action (additional forms, visible name)
         /// </summary>
-        public PresetFile PresetFile { get; set; }
-        public FormMidi2Game MainForm { get; set; }
-        private RuleTypeManager ruleTypeManager = new RuleTypeManager();
-        private void InitRuleTypes()
+        public ClassRecord ActiveActionType
         {
-            for (int i = 0; i < ruleTypeManager.ruleTypes.Count - 1; i++)
+            get { return activeActionRecord; }
+            set
             {
-                RuleClassRecord rec = ruleTypeManager.ruleTypes[i];
-                listBoxRuleType.Items.Add(rec);
+                if (actionAdditionalForm != null)
+                {
+                    HideAdditionalActionForm();
+                }
+                activeActionRecord = value;
+                if ((activeActionRecord != null) && (activeActionRecord.classForm != null))
+                {
+                    ShowAdditionalActionForm(activeActionRecord.classForm);
+                }
             }
-        }
-
-        private void InitActionTypes()
-        {
-
-        }
-
+        }        
         private void tsbSave_Click(object sender, EventArgs e)
         {
             if (EditRule == null)
                 return;
             EditRule.RuleName = editName.Text;
-            EditRule.StopProcessing = editStopProcessing.Checked;
-            IFormRule ifrm = ruleAdditionalForm as IFormRule;
-            if (ifrm != null)
-            {
-                ifrm.SaveRule();
-            }
-            
+            EditRule.StopProcessing = editStopProcessing.Checked;           
             // Change object in storage, if 
             if ((Rule != null) && (PresetFile != null))
             {
@@ -182,7 +269,6 @@ namespace midi2games
             }
             
         }
-
         private void tsbPrevRule_Click(object sender, EventArgs e)
         {
             if ((PresetFile == null) || (rule == null))
@@ -192,7 +278,6 @@ namespace midi2games
                 return;
             Rule = PresetFile.rulesStorage[index - 1];
         }
-
         private void tsbNextRule_Click(object sender, EventArgs e)
         {
             if ((PresetFile == null) || (rule == null))
@@ -202,23 +287,38 @@ namespace midi2games
                 return;
             Rule = PresetFile.rulesStorage[index + 1];
         }
-
         private void listBoxRuleType_SelectedIndexChanged(object sender, EventArgs e)
         {
             //if (blockUIChange)
             //    return;
 
             if (listBoxRuleType.SelectedIndex < 0) {
-                ActiveRuleClassRecord = null;
+                ActiveRuleType = null;
                 return;
-                // TODO: hide all elements, clear active records
             }
             // set selected rule information
-            ActiveRuleClassRecord = (RuleClassRecord)listBoxRuleType.Items[listBoxRuleType.SelectedIndex];
+            ActiveRuleType = (ClassRecord)listBoxRuleType.Items[listBoxRuleType.SelectedIndex];
             // change EditRule to new type
-            var tmpRule = (HandleRule) Activator.CreateInstance(ActiveRuleClassRecord.ruleClass);
+            var tmpRule = (HandleRule) Activator.CreateInstance(ActiveRuleType.classRecord);
             tmpRule.CopyHeadInformationFrom(EditRule);
             EditRule = tmpRule;
+        }
+        private void listBoxActionType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBoxActionType.SelectedIndex < 0)
+            {
+                ActiveActionType = null;
+                return;
+            }
+            // get selected rule information
+            var tmpActionClass = (ClassRecord)listBoxActionType.Items[listBoxActionType.SelectedIndex];
+            // change EditRule.Action to new type
+            if (!blockUIChange)
+            {
+                HandleRuleAction tmpAction = (HandleRuleAction)Activator.CreateInstance(tmpActionClass.classRecord);
+                EditRule.Action = tmpAction;
+            }
+            ActiveActionType = tmpActionClass;
         }
     }
 }

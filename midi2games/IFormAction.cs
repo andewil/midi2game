@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace midi2games
 {
-    interface IFormRule
+    interface IFormAction
     {
-        void SetRule(HandleRule rule);
-        //void SaveRule();
-        //void CancelEdit();
+        void SetAction(HandleRuleAction value);
     }
 }

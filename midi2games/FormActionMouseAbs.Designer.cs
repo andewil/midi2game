@@ -1,6 +1,6 @@
 ﻿namespace midi2games
 {
-    partial class FormControlValeMatch
+    partial class FormActionMouseAbs
     {
         /// <summary>
         /// Required designer variable.
@@ -30,53 +30,55 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.editX = new System.Windows.Forms.TextBox();
+            this.editY = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 21);
+            this.label1.Location = new System.Drawing.Point(89, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.label1.Text = "X";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(32, 48);
+            this.label2.Location = new System.Drawing.Point(89, 39);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "label2";
+            this.label2.Text = "Y";
             // 
-            // textBox1
+            // editX
             // 
-            this.textBox1.Location = new System.Drawing.Point(104, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 2;
+            this.editX.Location = new System.Drawing.Point(120, 10);
+            this.editX.Name = "editX";
+            this.editX.Size = new System.Drawing.Size(100, 20);
+            this.editX.TabIndex = 2;
+            this.editX.TextChanged += new System.EventHandler(this.editX_TextChanged);
             // 
-            // textBox2
+            // editY
             // 
-            this.textBox2.Location = new System.Drawing.Point(104, 61);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 3;
+            this.editY.Location = new System.Drawing.Point(120, 36);
+            this.editY.Name = "editY";
+            this.editY.Size = new System.Drawing.Size(100, 20);
+            this.editY.TabIndex = 3;
+            this.editY.TextChanged += new System.EventHandler(this.editY_TextChanged);
             // 
-            // FormControlValeMatch
+            // FormActionMouseAbs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.editY);
+            this.Controls.Add(this.editX);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "FormControlValeMatch";
-            this.Text = "FormControlValeMatch";
+            this.Name = "FormActionMouseAbs";
+            this.Text = "FormActionMouseAbs";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -86,7 +88,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox editX;
+        private System.Windows.Forms.TextBox editY;
     }
 }

@@ -57,18 +57,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="AppUtils.cs" />
-    <Compile Include="FormControlValeMatch.cs">
+    <Compile Include="FormActionMouseAbs.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormControlValeMatch.Designer.cs">
-      <DependentUpon>FormControlValeMatch.cs</DependentUpon>
+    <Compile Include="FormActionMouseAbs.Designer.cs">
+      <DependentUpon>FormActionMouseAbs.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormControlValueIncDec.cs">
+    <Compile Include="FormActionMouseOffset.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormControlValueIncDec.Designer.cs">
-      <DependentUpon>FormControlValueIncDec.cs</DependentUpon>
+    <Compile Include="FormActionMouseOffset.Designer.cs">
+      <DependentUpon>FormActionMouseOffset.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormActionSendKey.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormActionSendKey.Designer.cs">
+      <DependentUpon>FormActionSendKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRuleControlValeMatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRuleControlValeMatch.Designer.cs">
+      <DependentUpon>FormRuleControlValeMatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRuleControlValueIncDec.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRuleControlValueIncDec.Designer.cs">
+      <DependentUpon>FormRuleControlValueIncDec.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLog.cs">
       <SubType>Form</SubType>
@@ -101,6 +120,7 @@
       <DependentUpon>FormRuleNote.cs</DependentUpon>
     </Compile>
     <Compile Include="HandleRuleAction.cs" />
+    <Compile Include="IFormAction.cs" />
     <Compile Include="IFormRule.cs" />
     <Compile Include="MidiHandler.cs" />
     <Compile Include="Program.cs" />
@@ -110,11 +130,20 @@
     <Compile Include="PresetFile.cs" />
     <Compile Include="RuleTypeManager.cs" />
     <Compile Include="StringIntDictionary.cs" />
-    <EmbeddedResource Include="FormControlValeMatch.resx">
-      <DependentUpon>FormControlValeMatch.cs</DependentUpon>
+    <EmbeddedResource Include="FormActionMouseAbs.resx">
+      <DependentUpon>FormActionMouseAbs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormControlValueIncDec.resx">
-      <DependentUpon>FormControlValueIncDec.cs</DependentUpon>
+    <EmbeddedResource Include="FormActionMouseOffset.resx">
+      <DependentUpon>FormActionMouseOffset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormActionSendKey.resx">
+      <DependentUpon>FormActionSendKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRuleControlValeMatch.resx">
+      <DependentUpon>FormRuleControlValeMatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRuleControlValueIncDec.resx">
+      <DependentUpon>FormRuleControlValueIncDec.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>

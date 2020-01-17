@@ -10,13 +10,14 @@ using System.Windows.Forms;
 
 namespace midi2games
 {
-    public partial class FormRuleNote : Form, IFormRule
+    public partial class FormRuleControlValueIncDec : Form, IFormRule
     {
-        private HandleRule handleRule;
-        public FormRuleNote()
+        public FormRuleControlValueIncDec()
         {
             InitializeComponent();
         }
+
+        HandleRule handleRule;
 
         public void CancelEdit()
         {
@@ -25,29 +26,21 @@ namespace midi2games
 
         public void SaveRule()
         {
-            NoteOnRule noteOnRule = handleRule as NoteOnRule;
-            if (noteOnRule != null)
-            {
-                noteOnRule.Note = int.Parse(editNote.Text);
-            }
+            
         }
 
         public void SetRule(HandleRule rule)
         {
             handleRule = rule;
-            NoteOnRule noteOnRule = handleRule as NoteOnRule;
-            if (noteOnRule != null)
-            {
-                editNote.Text = noteOnRule.Note.ToString();
-            }
+            editControlNumber.Text = handleRule.GetValue("ControlNumber").ToString();
         }
 
-        private void editNote_TextChanged(object sender, EventArgs e)
+        private void editControlNumber_TextChanged(object sender, EventArgs e)
         {
-            if (((TextBox) sender).Text != null)
+            if (((TextBox)sender).Text != null)
             {
                 int val = AppUtils.GetIntFromTextBox((TextBox)sender, 0);
-                handleRule.SetValue("Note", val);
+                handleRule.SetValue("ControlNumber", val);
             }
         }
     }

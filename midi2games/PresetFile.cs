@@ -83,7 +83,7 @@ namespace midi2games
         public static void SerializeToFile(string fileName, PresetFile rulesData)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(PresetFile));
-            using (var sww = new FileStream(fileName, FileMode.OpenOrCreate))
+            using (var sww = new FileStream(fileName, FileMode.Create))
             {
                 xmlSerializer.Serialize(sww, rulesData);
             }
