@@ -28,18 +28,26 @@ namespace midi2games
         [XmlArray("Rules"), XmlArrayItem(typeof(HandleRule), ElementName = "Rule")]
         public ObservableCollection<HandleRule> rulesStorage = new ObservableCollection<HandleRule>();
 
+        public event RuleEventHandler BeforeDeleteRule;
+        public event RuleEventHandler AfterAddRule;
+        public event RuleEventHandler BeforeReplace;
+        public event EventHandler BeforeClearAllRules;
+
         public void AddRule(HandleRule rule)
         {
             rulesStorage.Add(rule);
+            AfterAddRule?.Invoke(this, rule);
         }
 
         public void RemoveRule(HandleRule rule)
         {
+            BeforeDeleteRule?.Invoke(this, rule);
             rulesStorage.Remove(rule);
         }
 
         public void Clear()
         {
+            BeforeClearAllRules?.Invoke(this, null);
             rulesStorage.Clear();
         }
 
@@ -50,6 +58,7 @@ namespace midi2games
 
         public void ReplaceRule(int index, HandleRule replacement)
         {
+            BeforeReplace?.Invoke(this, replacement);
             var removingItem = rulesStorage[index];
             rulesStorage.Insert(index, replacement);
             rulesStorage.Remove(item: removingItem);
@@ -57,6 +66,7 @@ namespace midi2games
 
         public void ReplaceRule(HandleRule oldRule, HandleRule newRule)
         {
+            BeforeReplace?.Invoke(this, newRule);
             int index = rulesStorage.IndexOf(oldRule);
             if (index < 0)
                 index = rulesStorage.Count;

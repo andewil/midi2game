@@ -42,8 +42,19 @@ namespace midi2games
         public FormLog formLog;
         public FormMonitor formMonitor;
         public FormRule formRule;
-        private MidiHandler midiHandler;
+        private MidiHandler midiHandler;        
+        public Boolean OpenedFileModified { get; set; }
         private const string FilesFilter = "M2G files(*.m2g)|*.m2g|All files(*.*)|*.*";
+        private const string DefaultWindowTitle = "MIDI2Game";
+        private string openedFileName;
+        public string OpenedFileName {
+            get => openedFileName;
+            set
+            {
+                openedFileName = value;
+                UpdateTitle();
+            }
+        }
         #endregion
 
         #region methods
@@ -181,7 +192,19 @@ namespace midi2games
         }
         private void SetPresetFile(PresetFile file)
         {
+            if (rulesManager != null)
+            {
+                rulesManager.AfterAddRule -= PresetFileChangeHandler;
+                rulesManager.BeforeDeleteRule -= PresetFileChangeHandler;
+                rulesManager.BeforeReplace -= PresetFileChangeHandler;
+            }
             rulesManager = file;
+            if (rulesManager != null)
+            {
+                rulesManager.AfterAddRule += PresetFileChangeHandler;
+                rulesManager.BeforeDeleteRule += PresetFileChangeHandler;
+                rulesManager.BeforeReplace += PresetFileChangeHandler;
+            }
             if (midiHandler != null)
             {
                 midiHandler.PresetFile = file;
@@ -308,6 +331,23 @@ namespace midi2games
             if (listViewRules.SelectedItems.Count == 0) return null;
             return listViewRules.SelectedItems[0];
         }
+        private void PresetFileChangeHandler(object sender, HandleRule rule)
+        {
+            OpenedFileModified = true;
+            UpdateTitle();
+        }
+        private void UpdateTitle()
+        {
+            var s = $"{DefaultWindowTitle} - {openedFileName}";
+            if (OpenedFileModified)
+            {
+                s = s + "*";
+            }
+            if (!string.Equals(s, Text))
+            {
+                Text = s;
+            }
+        }
         #endregion
 
         #region UI events
@@ -400,6 +440,8 @@ namespace midi2games
                     logger.Info("Open file: " + dialog.FileName);
                     var rm = PresetFile.DeserializeFromFile(dialog.FileName);
                     SetPresetFile(rm);
+                    OpenedFileModified = false;
+                    OpenedFileName = dialog.FileName;
                 }
             }
         }
@@ -489,9 +531,9 @@ namespace midi2games
                 formRule = null;
             }
         }
-        private void tsbNex_Click(object sender, EventArgs e)
+        private void tsbNext_Click(object sender, EventArgs e)
         {
-
+            //
         }
         private void FormMidi2Game_FormClosing(object sender, FormClosingEventArgs e)
         {

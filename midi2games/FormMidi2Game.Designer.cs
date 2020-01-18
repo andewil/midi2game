@@ -454,7 +454,7 @@
             this.tsbNex.Name = "tsbNex";
             this.tsbNex.Size = new System.Drawing.Size(23, 22);
             this.tsbNex.Text = "New";
-            this.tsbNex.Click += new System.EventHandler(this.tsbNex_Click);
+            this.tsbNex.Click += new System.EventHandler(this.tsbNext_Click);
             // 
             // tsbEdit
             // 
